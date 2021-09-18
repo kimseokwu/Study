@@ -80,6 +80,7 @@ def twoSum(nums, target):
 def trap(height):
     if not height:
         return 0
+    
     volume = 0
     left, right = 0, len(height) - 1
     left_max, right_max = height[left], height[right]
@@ -114,12 +115,12 @@ def trap(height):
 
             if not len(stack):
                 break
-# 이전과의 차이만큼 물 높이 처리
-    distance = i - stack[-1] - 1
-    waters = min(height[i], height[stack[-1]]) - height[top]
-    volume += distance + waters
+            # 이전과의 차이만큼 물 높이 처리
+            distance = i - stack[-1] - 1
+            waters = min(height[i], height[stack[-1]]) - height[top]
+            volume += distance + waters
 
-    stack.append(i)
+        stack.append(i)
     return volume
 ```
 
@@ -158,12 +159,15 @@ def threeSum(nums):
             else:
                 # sum = 0인 경우이므로 정답 및 스킵 처리
                 result.append([nums[i], nums[left], nums[right]])
-while left < right and nums[left] == nums[left + 1]:
-left += 1
-while left < right and nums[right] == nums[right - 1]:
-right -= 1
-left += 1
-right -= 1
+                
+                while left < right and nums[left] == nums[left + 1]:
+                    left += 1
+                while left < right and nums[right] == nums[right - 1]:
+                    right -= 1
+                left += 1
+                right -= 1
+    
+    return result
 ```
 
 - 투포인터는 대개 시작접과 끝점 또는 왼쪽 포인터와 오른쪽 포인터 두 지점을 기준으로 하는 문제 풀이 전략이다.
@@ -183,15 +187,16 @@ min(1, 2) + min(3, 4) = 4
 
 ```python
 def arrayPairSum(nums):
-sum = 0
-pair = []
-nums.sort()
+    sum = 0
+    pair = []
+    nums.sort()
 
-for n in nums:
-pair.append(n)
-if len(pair) == 2:
-sum += min(pair}
-pair = []
+    for n in nums:
+        # 앞에서부터 오름차순으로 페어를 만들어서 합 계산
+        pair.append(n)
+        if len(pair) == 2:
+            sum += min(pair}
+            pair = []
 
 return sum
 ```
@@ -202,12 +207,12 @@ return sum
 
 ```python
 def arrayPairSum(nums):
-sum = 0
-nums.sort()
+    sum = 0
+    nums.sort()
 
-for i, n in enumerate(nums);
-if i % 2 == 0:
-sum += n
+    for i, n in enumerate(nums);
+        if i % 2 == 0:
+            sum += n
 
 return sum
 ```
@@ -234,17 +239,17 @@ def arrayPairSum(nums):
 
 ```python
 def productExceptSelf(nums):
-out = []
-p = 1
-# 왼쪽 곱셈
-for i in range(0, len(nums)):
-out.append(p)
-p = p * nums[i]
-p = 1
+    out = []
+    p = 1
+    # 왼쪽 곱셈
+    for i in range(0, len(nums)):
+        out.append(p)
+        p = p * nums[i]
+    p = 1
 # 왼쪽 곱셈 결과에 오른쪽 값을 차례대로 곱셈
 for i in range(len(nums) - 1, 0 - 1, -1):
-out[i] = out[i] * p
-p = p * nums[i]
+    out[i] = out[i] * p
+    p = p * nums[i]
 return out
 ```
 
@@ -259,16 +264,16 @@ return out
 
 ```python
 def maxProfit(prices):
-import sys
-profit = 0
-min_price = sys.maxsize
+    import sys
+    profit = 0
+    min_price = sys.maxsize
 
-#최솟값과 최댓값을 계속 갱신
-for price in prices:
-min_price = min(min_price, price)
-profit = max(profit, price - min_price)
+    #최솟값과 최댓값을 계속 갱신
+    for price in prices:
+        min_price = min(min_price, price)
+        profit = max(profit, price - min_price)
 
-return profit
+    return profit
 ```
 
 - sys.maxsize를 이용하면 시스템이 지정할 수 있는 가장 높은 값, 가장 낮은 값을 활용할 수 있다.
