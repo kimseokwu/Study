@@ -316,4 +316,73 @@ def solution(head):
 
 # 홀짝 연결 리스트
 
-- 연결리스트를 홀수 ㅗㄴ드 다음에 짝수 노드가 오도록 재구성하라. 공간복잡도 O(n), 시간복잡도 O(n)에 풀이하라.
+- 연결리스트를 홀수 노드 다음에 짝수 노드가 오도록 재구성하라. 공간복잡도 O(n), 시간복잡도 O(n)에 풀이하라.
+
+> __예제__
+>
+> - 입력: 1->2->3->4->5->NULL
+> - 출력: 1->3->5->2->4->NULL
+
+
+
+__풀이 1. 반복구조로 홀짝 노드 처리__
+
+- 이런 문제는 제약이 없을 경우 연결리스트를 리스트로 바꾸고 파이썬 리스트가 제공하는 슬라이싱과 같은 다양한 함수를 사용하면 좀 더 쉽고 직관적이며 또한 빠르게 풀 수 있다. 하지만 우아하지 않다.
+
+```python
+def solution(head):
+    # 예외 처리
+    if head is None:
+        return None
+    
+    odd = head
+    even = head.next
+    even_head = head.next
+    
+    # 반복하면서 홀짝 노드 처리
+    while even and even.next:
+        odd.next, even.next = odd.next.next, even.next.next
+        odd, even = odd.next, even.next
+        
+    # 홀수 노드의 마지막을 짝수 헤드로 연결
+    odd.next = even_head
+    return head
+```
+
+
+
+### 역순 연결 리스트 2
+
+- 인덱스 m에서 n까지를 역순으로 만들어라. 인덱스 m은 1부터 시작한다.
+
+> __예제__
+>
+> - 입력: 1->2->3->4->5->NULL, m = 2, n = 4
+> - 출력: 1->4->3->2->5->NULL
+
+
+
+__풀이 1. 반복 구조로 노드 뒤집기__
+
+```python
+def solution(head, m, n):
+    # 예외 처리
+    if not head or m == n:
+        return head
+    
+    root = start = ListNode(None)
+    root.next = head
+    # start, end 지정
+    for _ in range(m - 1):
+        start = start.next
+    end = start.next
+    
+    # 반복하면서 뒤집기
+    for _ in range(n - m):
+        tmp, start.next, end.next = start.next, end.next, end.next.next
+        start.next.next = tmp
+    
+    return root.next
+```
+
+ 
