@@ -420,3 +420,101 @@ def solution(numCouses, prerequsites):
     return True
 ```
 
+
+
+# 최단 경로 문제
+
+- 최단 경로 문제는 각 간선의 가중치 합이 최소가 되는 두 정점 사이의 경로를 찾는 문제다.
+
+- 그래프의 종류와 특성에 따라 가가가 최적화된 다양한 최단 경로 알고리즘이 존재한다. 가장 유명한 알고리즘은 다익스트라 알고리즘이다.
+- 다익스트라 알고리즘은 항상 노드 주변의 최단 경로만을 택하는 대표적인 그리디 알고리즘 중 하나로, 단순할 뿐만 아니라 실행 속도 또한 빠르다.
+- 다익스트라 알고리즘은 노드 주변을 탐색할 때 BFS를 이용하는 대표적인 알고리즘이기도 하다.
+- DFS는 한 사람이 미로를 찾아 해매는 과정과 비슷한 반면 BFS는 여러명의 사람이 각기 서로 다른 갈림길로 흩어져서 길을 찾는 것과 비슷하다.
+- 시간복잡도는 O(E log V)다. (E: 간선, V: 정점)
+
+
+
+### 네트워크 딜레이 타임
+
+- k부터 출발해 모든 노드가 신호를 받을 수 있는 시간을 계산하라. 불가능할 경우 -1을 리턴한다. 입력값 (u, v, w)는 각각 출발지, 도착지, 소요 시간으로 구성되며, 전체 노드의 개수는 N으로 입력받는다.
+
+> __예제__
+>
+> - 입력: times = [[2, 1, 1], [2, 3, 1], [3, 4, 1]], N = 4,  K = 2
+> - 출력: 2
+
+
+
+__풀이 1. 다익스트라 알고리즘 구현__
+
+- 이 문제에서는 모든 노드가 신호를 받는데 걸리는 시간, 모든 노드에 도달할 수 있는지 여부 2가지 사항을 판별해야 한다.
+- 모든 노드가 신호를 받는 데 걸리는 시간이란, 가장 오래 걸리는 노드 까지의 시간이라 할 수 있다. 이는 다익스트라 알고리즘으로 추출할 수 있다.
+- 모든 노드에 도달할 수 있는지 여부는 모든 노드의 다익스트라 알고리즘 계산 값이 존재하는 지 유무로 판별 할 수 있다.
+
+```python
+def solution(times, N, K):
+    graph = collections.defalutdict(list)
+    # 그래프 인접리스트 구성
+    for u, v, w in times:
+        graph[u].append((v, w))
+        
+    # 큐 변수: [(소료시간, 정점)]
+    Q = [(0, K)]
+    dist = collections.defaultdict(int)
+    
+    # 우선순위 큐 최솟값 기준으로 정점까지 최단 경로 삽입
+    while Q:
+        time, node = heapq.heappop(Q)
+        if node not in dist:
+            dist[node] = time
+            for v, w in graph[node]:
+                alt = time + w
+                heapq.heappush(Q, (alt, v))
+    
+    # 모든 노드의 최단 경로 존재 여부 판별
+    if len(dist) == N:
+        return max(dist.values())
+    return -1
+```
+
+
+
+### K 경유지 내 가장 저렴한 항공권
+
+- 시작점에서 도착점까지의 가장 저렴한 가격을 계산하되, K개의 경유지 이내에 도착하는 가격을 리턴하라. 경로가 존재하지 않을 경우 -1을 리턴한다.
+
+> __예제__
+>
+> - 입력: n = 3, edge = [[0, 1, 100], [1, 2, 100], [0, 2, 500], src = 0, dst = 2, K = 0
+> - 출력: 500
+
+
+
+__풀이 1. 다익스트라 알고리즘 응용__
+
+- 우선순위 큐에 추가할 때 K 이내일때만 경로를 추가하여 K를 넘어서는 경로는 더 이상 탐색되지 않게 한다.
+
+```python
+def solution(n, flights, src, dst, K):
+    graph = collections.defaultdict(list)
+    # 그래프 인접 리스트 구성
+    for u, v, w in flights:
+        graph[u].append((v, w))
+        
+    # 큐 변수: [(가격, 정점, 남은 가능 경유지 수)]
+    Q = [(0, src, K)]
+    
+    # 우선순위 큐 최솟값 기준으로 도착점까지 최소 비용 판별
+    while Q:
+        price, node, k = heapq.heappop(Q)
+        if node == dst:
+            return price
+        if k >= 0:
+            for v, w in graph[node]:
+                alt = price + w
+                heapq.heappush(Q, (alt, v, k - 1))
+    return -1
+```
+
+
+
