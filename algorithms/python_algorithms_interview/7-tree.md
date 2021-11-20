@@ -528,3 +528,80 @@ class solution:
         return self.result
 ```
 
+
+
+# 트리 순회
+
+- 트리 순회란 그래프 순회의 한 형태로 트리 자료구조에서 각 노드를 정확히 한 번 방문하는 과정을 말한다.
+- 이진 트리에서 DFS는 노드의 방문 순서에 따라 다음과 같이 크게 3가지 방식으로 구분된다.
+  - 전위 순회(pre - order): 현재 노드를 먼저 순회한 다음 왼쪽, 오른쪽 서브트리 순회
+  - 중위 순회(in - order): 왼쪽 서브트리를 순회한 후 현재 노드, 오른쪽 서브트리 순회
+  - 후위 순회(post - order): 왼쪽과 오른쪽 서브트리를 순회한 다음 현재 노드 순회
+
+
+
+__전위 순회__
+
+```python
+def preorder(node):
+	if node is None:
+    	return
+    print(node.val)
+    preorder(node.left)
+    preorder(node.right)
+```
+
+
+
+__중위 순회__
+
+```python
+def inorder(node):
+    if node is None:
+        return
+    inorder(node.left)
+    print(node.val)
+    inorder(node.right)
+```
+
+
+
+__후위 순회__
+
+```python
+def postorder(node):
+    if node is None:
+        return
+    postorder(node.left)
+    postorder(node.right)
+    print(node.val)
+```
+
+
+
+### 전위, 중위 순회 결과로 이진트리 구축
+
+- 전위, 중위 순회 결과를 입력값으로 받아 이진 트리를 구축하라.
+
+
+
+__풀이 1. 전위 순회 결과로 중위 순회 분할 정복__
+
+- 전위 순회의 첫번째 결과는 중위 순회 결과를 왼쪽과 오른쪽으로 분할 시키는 역할을 한다. 이를 이용해 중위 순회의 분할 정복 문제로 바꾼다.
+- 전위 순회의 두번째 노드는 중위 순회의 왼쪽 결과를 정확히 반으로 가른다.
+- 이후 남아 있는 노드들을 계속 분할을 시도한다.
+
+```python
+def solution(preorder, inorder):
+    if inorder:
+        # 전위 순회 결과는 중위 순회 분할 인덱스
+        index = inorder.index(preorder.pop(0))
+        
+        # 중위 순회 결과 분할 정복
+        node = TreeNode(inorder[index])
+        node.left = solution(preorder, inorder[0:index])
+        node.right = solution(preorder, inorder[indes + 1:])
+        
+        return node
+```
+
