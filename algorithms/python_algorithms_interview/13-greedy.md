@@ -149,7 +149,7 @@ def solution(tasks, n):
             sub_count += 1
             result += 1
             
-            counter.subtract(task)
+            counter.subtract(task) # 한개 씩 개수 줄이기
             # 0 이하인 아이템을 목록에서 완전히 제거
             counter += collections.Counter()
             
@@ -159,5 +159,72 @@ def solution(tasks, n):
         result += n - sub_count + 1
     
     return result
+```
+
+
+
+### 주유소
+
+- 원형으로 경로가 연결된 주유소 목록이 있다. 각 주유소는 gas[i]만큼의 기름을 갖고 있으며, 다음 주유소로 이동하는 데 cost[i]가 필요하다. 기름이 부족하면 이동할 수 없다고 할 때 모든 주유소를 방문할 수 있는 출발점의 인덱스를 출력하라.
+- 출발점이 존재하지 않는 경우 -1을 출력하라.
+
+> __예제__
+>
+> - 입력: gas = [1, 2, 3, 4, 5], cost = [3, 4, 5, 1, 2]
+> - 출력: 3
+
+
+
+__풀이 1. 한 번 방문__
+
+- 전체 기름의 양이 전체 비용보다 클 경우 반드시 전체를 방문할 수 있는 출발점이 존재한다. 이 문제에는 출발점이 유일하다는 제약이 있으므로 반드시 한군데만 존재한다.
+- 이 문제는 한 번 이상은 반드시 성립되지 않는 지점이 존재한다. 성립되지 않는 지점이 있을 때 그 앞은 전부 출발점이 될 수 없다.
+
+```python
+def solution(gas, cost):
+    # 모든 주유소 방문 가능 여부 판별
+    if sum(gas) < sum(cost):
+        return -1
+    
+    start, fuel = 0, 0
+    for i in range(len(gas)):
+        # 출발이 안되는 지점 판별
+        if gas[i] + fuel < cost[i]:
+            start = i + 1
+            fuel = 0
+        else:
+            fuel += gas[i] - cost[i]
+    return start
+```
+
+
+
+### 쿠키 부여
+
+- 아이들에게 1개씩 쿠키를 나눠줘야 한다. 각 아이마다 그리드 팩터를 가지고 있으며 이는 아이가 만족하는 최소 쿠키의 크기를 말한다. 각 쿠키는 크기를 갖고 있으며 크기가 그리드 팩터보다 커야 아이가 만족하며 쿠키를 받는다. 최대 몇 명의 아이들에게 쿠키를 줄 수 있는 지 출력하라.
+
+> __예제__
+>
+> - 입력: [1, 2, 3], [1, 1]
+> - 출력: 1
+> - 설명: 두 번째 아이부터는 크기 2 이상의 쿠키가 필요하지만, 갖고 있는 최대 크기는 1이기 때문에 1명의 아이에게만 줄 수 있다.
+
+
+
+__풀이 1. 그리디 알고리즘__
+
+```python
+def solution(g, s):
+    g.sort()
+    s.sort()
+    
+    child_i = cookie_j = 0
+    # 만족하지 못할 때까지 그리디 진행
+    while child_i < len(g) and cookie_j < len(s):
+        if s[cookie_j] >= g[child_i]:
+            child_i += 1
+        cookie_j += 1
+        
+    return child_i
 ```
 
