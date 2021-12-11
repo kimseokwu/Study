@@ -1,0 +1,85 @@
+# 2021-12-11 프로그래머스 데브코스 DAY 05
+
+__오늘 배운 것__
+
+- 다익스트라 알고리즘
+- HTML 기본
+
+__오늘 깨달은 것__
+
+오늘 코딩테스트 문제로 그래프가 주어지고 간선마다 해당되는 값이 주어졌을 때, 특정 지점에서 목표 지점까지 일정 값 이하로 도달하게 하는, 쉽게 말하면 최단 거리문제가 나왔는데 최단거리 문제는 BFS로 풀어야 한다는 것은 이미 배웠기 때문에 BFS로 풀이를 시도했다. 처음 내 풀이는 바로 이것이었다.
+
+```python
+def solution(N, road, K):
+    from collections import defaultdict, deque
+    graph = {from_:dict() for from_ in range(1, N + 1)}
+
+    for town1, town2, time in road:
+        if town1 in graph[town2]:
+            graph[town2][town1] = min(graph[town2][town1], time)
+        else:
+            graph[town2][town1] = time
+
+        if town2 in graph[town1]:
+            graph[town1][town2] = min(graph[town1][town2], time)
+        else:
+            graph[town1][town2] = time
+
+
+    def BFS(town):
+        q = deque([[town, [], 0]])
+        town_lst = set()
+        while q:
+            depart, traced, now = q.popleft()
+            if now <= K:
+                town_lst.add(depart)
+
+            for town, time in graph[depart].items():
+                if town not in traced and now + time <= K:
+                    q.append([town, traced+[town], now+time])
+                    town_lst.add(depart)
+
+        return town_lst
+
+    return len(BFS(1))
+```
+
+어떻게든 걸리는 시간을 줄여보려고 정점사이 중복된 길을 최대한 시간이 적게 걸리는 길만을 골라내는 코드를 추가하기도 하고(앞부분), 큐에 넣는 원소에 traced 리스트를 추가해서 한번 방문했던 정점을 다시 방문하지 않도록 해보기도 했지만 31개의 테스트 케이스를 모두 통과하는 데도 32번째 테스트케이스를 시간초과로 통과할 수 없었다.
+    
+대체 어떻게 풀어야 하나 고민하던 중 다익스트라 알고리즘이 생각났다. 다익스트라 알고리즘은 BFS에 힙을 이용하여 그래프에서 최단 거리를 찾는 알고리즘이다. 코딩테스트는 이미 끝난 뒤였지만 문제를 맞혀보고 싶어서 예전에 필기해놨던 노트를 보면서 다익스트라 알고리즘을 사용한 코드를 작성해봤다.
+
+```python
+def solution(N, road, K):
+    from collections import defaultdict
+    import heapq
+    graph = defaultdict(list)
+    
+    for u, v, w in road:
+        graph[u].append((v, w))
+        graph[v].append((u, w))
+    
+    Q = [(0, 1)]
+    dist = defaultdict(int)
+    
+    while Q:
+        time, node = heapq.heappop(Q)
+        if node not in dist:
+            dist[node] = time
+            for v, w in graph[node]:
+                alt = time + w
+                heapq.heappush(Q, (alt, v))
+   
+    answer = 0
+    for node, time in dist.items():
+        if time <= K:
+            answer += 1
+    
+    return answer
+```
+
+결과는 당연히 올 통과였다. 같은 BFS를 쓰는 알고리즘인데도 다익스트라 알고리즘을 사용해야만 풀린다니. 아마 다익스트라 알고리즘은 dist를 사용해서 최단거리를 기록해놓다보니 다이나믹 프로그래밍적 요소가 들어가서 더 빠른 것일까? 이것은 그냥 내 추측이다... 앞으로 코딩테스트에 최단 거리를 묻는 문제가 엄청 많이 나올텐데 다익스트라 알고리즘을 꼭 외워놔야겠다고 느꼈다.
+
+
+__그냥 일기__
+
+오늘부터 html 공부를 시작했다. 나는 프로그래밍 공부를 데이터 분석부터 시작했기때문에 파이썬, SQL만 알고 웹이나 기본 컴퓨터과학에 대해서는 아는 것이 전혀 없어서 이제까지 구글링을 하거나 다른 사람에게 물어볼 때 설명을 알아듣기가 너무 어려웠다. 인터넷에 웹에 대해 공부하려면 보통 HTML, CSS 공부로 시작한다고해서 무작정 HTML 공부를 시작했다. 그 외에도 자바스크립트, 플라스크, 쟝고로 공부를 이어나갈 생각이다. 웹에 대해 공부해놓으면 나중에 실제 기업에 취업하게 된 후에도 쓸 일이 많을 것이라고 생각한다.
